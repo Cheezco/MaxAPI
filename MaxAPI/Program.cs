@@ -1,4 +1,6 @@
 using MaxAPI.Contexts;
+using MaxAPI.Services;
+using MaxAPI.Services.Interfaces;
 using MaxAPI.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +32,10 @@ if (builder.Environment.IsDevelopment())
     });
 }
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services
+    .AddTransient<IAuthenticationService, AuthenticationService>()
+    .AddTransient<IUserService, UserService>()
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         var signingKey = "A31kSjhFw1-pJupaTMd-pYdZmkSwAC7v5JPVa1wfcYHSKnpdZmPUyi94i4fYxu5uZpNi8ugaWuJAK9Zr79SjtA";

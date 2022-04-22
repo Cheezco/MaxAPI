@@ -1,17 +1,33 @@
-﻿using MaxAPI.Contexts;
-using MaxAPI.Models;
+﻿using MaxAPI.Models;
 using MaxAPI.Models.Accounts;
-using Microsoft.EntityFrameworkCore;
+using MaxAPI.Services.Interfaces;
+using MaxAPI.Utils;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
-namespace MaxAPI.Utils
+namespace MaxAPI.Services
 {
-    public class AuthenticationUtils
+    public class AuthenticationService : IAuthenticationService
     {
-        public static string GenerateJSONWebToken(User user)
+        private readonly IUserService _userService;
+
+        public AuthenticationService(IUserService userService)
+        {
+            _userService = userService;
+        }
+
+        public async Task<User?> AuthenticateUserAsync(LoginUser loginUser)
+        {
+            var user = await _userService.GetUserAsync(x => x.Username == loginUser.LoginName);
+
+            if (user is null) return null;
+
+            return HashingUtils.VerifyArgon2(loginUser.Password, user) ? user : null;
+        }
+
+        public string GenerateJSONWebToken(User user)
         {
             var signingKey = "A31kSjhFw1-pJupaTMd-pYdZmkSwAC7v5JPVa1wfcYHSKnpdZmPUyi94i4fYxu5uZpNi8ugaWuJAK9Zr79SjtA";
             var securityKey = new SymmetricSecurityKey(Base64Url.Decode(signingKey));
@@ -32,15 +48,6 @@ namespace MaxAPI.Utils
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        public static async Task<User?> AuthenticateUserAsync(MainContext context, LoginUser loginUser)
-        {
-            var user = await context.Users.FirstOrDefaultAsync(x => x.Username == loginUser.LoginName);
-
-            if (user is null) return null;
-
-            return HashingUtils.VerifyArgon2(loginUser.Password, user) ? user : null;
         }
     }
 }

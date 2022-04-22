@@ -1,6 +1,6 @@
-﻿using MaxAPI.Contexts;
-using MaxAPI.Models;
+﻿using MaxAPI.Models;
 using MaxAPI.Models.Accounts;
+using MaxAPI.Services.Interfaces;
 using MaxAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,18 +11,18 @@ namespace MaxAPI.Controllers.Account
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly MainContext _context;
+        private readonly IAuthenticationService _authenticationService;
 
-        public LoginController(MainContext context)
+        public LoginController(IAuthenticationService authenticationService)
         {
-            _context = context;
+            _authenticationService = authenticationService;
         }
 
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<User>> Login(LoginUser loginUser)
         {
-            var user = await AuthenticationUtils.AuthenticateUserAsync(_context, loginUser);
+            var user = await _authenticationService.AuthenticateUserAsync(loginUser);
 
             if (user is null) return Unauthorized();
 
