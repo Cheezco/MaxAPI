@@ -1,10 +1,6 @@
-﻿using MaxAPI.Contexts;
-using MaxAPI.Models;
-using MaxAPI.Models.Accounts;
-using MaxAPI.Utils;
-using Microsoft.AspNetCore.Http;
+﻿using MaxAPI.Models.Accounts;
+using MaxAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace MaxAPI.Controllers.Account
 {
@@ -12,33 +8,19 @@ namespace MaxAPI.Controllers.Account
     [ApiController]
     public class RegisterController : ControllerBase
     {
-        private readonly MainContext _context;
+        private readonly IUserService _userService;
 
-        public RegisterController(MainContext context)
+        public RegisterController(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterUser registerUser)
         {
-            if (await _context.Users.AnyAsync(x => x.Username == registerUser.Username && EF.Functions.Like(x.Email, $"%{registerUser.Email}%"))) return StatusCode(409);
+            if (await _userService.ExistsAsync(registerUser.Username, registerUser.Email)) return StatusCode(409);
 
-            var salt = HashingUtils.CreateSalt(128);
-            var hashedPassword = HashingUtils.GetArgon2Hash(registerUser.Password, salt);
-            var user = new User()
-            {
-                Password = hashedPassword,
-                Salt = salt,
-                Email = registerUser.Email,
-                Username = registerUser.Username,
-                FirstName = registerUser.FirstName,
-                LastName = registerUser.LastName,
-                PersonalCode = registerUser.PersonalCode,
-            };
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            await _userService.RegisterAsync(registerUser);
 
             return StatusCode(204);
         }
