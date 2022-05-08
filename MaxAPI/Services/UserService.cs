@@ -57,24 +57,5 @@ namespace MaxAPI.Services
             _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
-
-        public async Task RegisterAsync(RegisterUser registerUser)
-        {
-            var salt = HashingUtils.CreateSalt(128);
-            var hashedPassword = HashingUtils.GetArgon2Hash(registerUser.Password, salt);
-            var user = new User()
-            {
-                Password = hashedPassword,
-                Salt = salt,
-                Email = registerUser.Email,
-                Username = registerUser.Username,
-                FirstName = registerUser.FirstName,
-                LastName = registerUser.LastName,
-                PersonalCode = registerUser.PersonalCode,
-            };
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-        }
     }
 }

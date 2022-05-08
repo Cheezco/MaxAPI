@@ -12,6 +12,5 @@ namespace MaxAPI.Services.Interfaces
         Task UpdateAsync(User user);
         Task DeleteAsync(int id);
         Task DeleteAsync(User user);
-        Task RegisterAsync(RegisterUser registerUser);
     }
 }

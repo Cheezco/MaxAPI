@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Converters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+    options.SerializerSettings.Converters.Add(new StringEnumConverter());
 });
 
 if (builder.Environment.IsDevelopment())
@@ -35,6 +37,9 @@ if (builder.Environment.IsDevelopment())
 builder.Services
     .AddTransient<IAuthenticationService, AuthenticationService>()
     .AddTransient<IUserService, UserService>()
+    .AddTransient<IRegistrationService, RegistrationService>()
+    .AddTransient<IPatientService, PatientService>()
+    .AddTransient<IDoctorService, DoctorService>()
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
