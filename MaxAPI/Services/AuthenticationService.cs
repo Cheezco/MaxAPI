@@ -39,6 +39,7 @@ namespace MaxAPI.Services
                 new Claim("Id", user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("Role", user.Role.ToString()),
             };
 
             var token = new JwtSecurityToken("max",

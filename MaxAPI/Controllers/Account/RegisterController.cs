@@ -1,5 +1,8 @@
 ﻿using MaxAPI.Models.Accounts;
+using MaxAPI.Models.Doctors;
+using MaxAPI.Models.Patients;
 using MaxAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MaxAPI.Controllers.Account
@@ -8,21 +11,38 @@ namespace MaxAPI.Controllers.Account
     [ApiController]
     public class RegisterController : ControllerBase
     {
-        private readonly IUserService _userService;
+        private readonly IRegistrationService _registrationService;
 
-        public RegisterController(IUserService userService)
+        public RegisterController(IRegistrationService registrationService)
         {
-            _userService = userService;
+            _registrationService = registrationService;
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterUser registerUser)
         {
-            if (await _userService.ExistsAsync(registerUser.Username, registerUser.Email)) return StatusCode(409);
+            bool registered = await _registrationService.RegisterAsync(registerUser);
 
-            await _userService.RegisterAsync(registerUser);
+            return registered ? StatusCode(204) : StatusCode(409);
+        }
 
-            return StatusCode(204);
+        [HttpPost("patient")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register(RegisterPatient registerPatient)
+        {
+            bool registered = await _registrationService.RegisterAsync(registerPatient);
+
+            return registered ? StatusCode(204) : StatusCode(409);
+        }
+
+        [HttpPost("doctor")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register(RegisterDoctor registerDoctor)
+        {
+            bool registered = await _registrationService.RegisterAsync(registerDoctor);
+
+            return registered ? StatusCode(204) : StatusCode(409);
         }
     }
 }

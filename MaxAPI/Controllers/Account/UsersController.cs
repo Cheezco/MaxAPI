@@ -9,6 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using MaxAPI.Contexts;
 using MaxAPI.Models;
 using MaxAPI.Models.Accounts;
+using MaxAPI.Models.Patients;
+using MaxAPI.Attributes;
+using Microsoft.AspNetCore.Authorization;
+using MaxAPI.Enums;
+using MaxAPI.Utils;
 
 namespace MaxAPI.Controllers
 {
@@ -25,6 +30,8 @@ namespace MaxAPI.Controllers
 
         // GET: api/Users
         [HttpGet]
+        [Authorize]
+        [AuthorizationRole(Role.Admin)]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
@@ -32,13 +39,20 @@ namespace MaxAPI.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<User>> GetUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
+            var role = ClaimUtils.GetRole(HttpContext);
+            int claimId = ClaimUtils.GetId(HttpContext);
 
             if (user == null)
             {
                 return NotFound();
+            }
+            if (claimId != id || role != Role.Admin)
+            {
+                return Unauthorized();
             }
 
             return user;
@@ -47,6 +61,8 @@ namespace MaxAPI.Controllers
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
+        [AuthorizationRole(Role.Admin)]
         public async Task<IActionResult> PutUser(int id, User user)
         {
             if (id != user.Id)
@@ -78,6 +94,8 @@ namespace MaxAPI.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
+        [AuthorizationRole(Role.Admin)]
         public async Task<ActionResult<User>> PostUser(User user)
         {
             _context.Users.Add(user);
@@ -88,6 +106,8 @@ namespace MaxAPI.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
+        [Authorize]
+        [AuthorizationRole(Role.Admin)]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var user = await _context.Users.FindAsync(id);

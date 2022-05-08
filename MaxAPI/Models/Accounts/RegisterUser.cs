@@ -1,4 +1,6 @@
-﻿namespace MaxAPI.Models.Accounts
+﻿using MaxAPI.Enums;
+
+namespace MaxAPI.Models.Accounts
 {
     public class RegisterUser
     {
@@ -7,8 +9,6 @@
         public string LastName { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
-        //Hospital
-        //Doctor
-        public string PersonalCode { get; set; }
+        public Role Role { get; set; }
     }
 }
