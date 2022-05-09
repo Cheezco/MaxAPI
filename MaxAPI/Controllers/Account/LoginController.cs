@@ -26,7 +26,7 @@ namespace MaxAPI.Controllers.Account
 
             if (user is null) return Unauthorized();
 
-            return Ok(new { id = user.Id, username = user.Username, email = user.Email, token = AuthenticationUtils.GenerateJSONWebToken(user), role = user.Role.ToString() });
+            return Ok(new { id = user.Id, username = user.Username, email = user.Email, token = _authenticationService.GenerateJSONWebToken(user), role = user.Role.ToString() });
         }
     }
 }
