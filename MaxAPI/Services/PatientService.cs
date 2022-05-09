@@ -66,24 +66,30 @@ namespace MaxAPI.Services
         public async Task<List<Patient>> GetAllAsync()
         {
             return await _context.Patients
+                .Include(x => x.Doctor)
                 .ToListAsync();
         }
 
         public async Task<List<Patient>> GetAllAsync(Expression<Func<Patient, bool>> predicate)
         {
             return await _context.Patients
+                .Include(x => x.Doctor)
                 .Where(predicate)
                 .ToListAsync();
         }
 
         public async Task<Patient?> GetByIdAsync(int id)
         {
-            return await _context.Patients.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Patients
+                .Include(x => x.Doctor)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Patient?> GetPatientAsync(Expression<Func<Patient, bool>> predicate)
         {
-            return await _context.Patients.FirstOrDefaultAsync(predicate);
+            return await _context.Patients
+                .Include(x => x.Doctor)
+                .FirstOrDefaultAsync(predicate);
         }
 
         public async Task UpdateAsync(Patient patient)

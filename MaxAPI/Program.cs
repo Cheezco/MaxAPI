@@ -40,6 +40,7 @@ builder.Services
     .AddTransient<IRegistrationService, RegistrationService>()
     .AddTransient<IPatientService, PatientService>()
     .AddTransient<IDoctorService, DoctorService>()
+    .AddTransient<IVaccinationService, VaccinationService>()
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

@@ -61,7 +61,8 @@ namespace MaxAPI.Services
                 LastName = registerPatient.LastName,
                 PersonalCode = registerPatient.PersonalCode,
                 Role = Enums.Role.Patient,
-                Doctor = doctor
+                Doctor = doctor,
+                Vaccinations = new List<Vaccination>()
             };
 
             _context.Users.Add(patient);
