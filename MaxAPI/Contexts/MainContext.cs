@@ -12,6 +12,7 @@ namespace MaxAPI.Contexts
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Vaccination> Vaccinations { get; set; }
+        public DbSet<Diagnosis> Diagnoses { get; set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public MainContext(DbContextOptions<MainContext> options) : base(options)
@@ -24,5 +25,7 @@ namespace MaxAPI.Contexts
         {
             base.OnModelCreating(modelBuilder);
         }
+
+        //public DbSet<MaxAPI.Models.Patients.Diagnosis>? Diagnosis { get; set; }
     }
 }
