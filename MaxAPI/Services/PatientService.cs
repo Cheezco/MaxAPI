@@ -1,4 +1,5 @@
 ﻿using MaxAPI.Contexts;
+using MaxAPI.Models.Doctors;
 using MaxAPI.Models.Patients;
 using MaxAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -96,6 +97,13 @@ namespace MaxAPI.Services
         {
             _context.Entry(patient).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Patient?> GetPatientWithDoctor(int patientId)
+        {
+            return await _context.Patients
+                .Include(x => x.Doctor)
+                .FirstOrDefaultAsync(x => x.Id == patientId);
         }
     }
 }

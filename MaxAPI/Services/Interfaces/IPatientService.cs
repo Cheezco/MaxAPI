@@ -1,4 +1,5 @@
-﻿using MaxAPI.Models.Patients;
+﻿using MaxAPI.Models.Doctors;
+using MaxAPI.Models.Patients;
 using System.Linq.Expressions;
 
 namespace MaxAPI.Services.Interfaces
@@ -17,5 +18,6 @@ namespace MaxAPI.Services.Interfaces
         Task UpdateAsync(Patient patient);
         Task DeleteAsync(int id);
         Task DeleteAsync(Patient patient);
+        Task<Patient?> GetPatientWithDoctor(int patientId);
     }
 }

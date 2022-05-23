@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using MaxAPI.Attributes;
 using MaxAPI.Enums;
 using MaxAPI.Utils;
+using MaxAPI.Models.Doctors;
 
 namespace MaxAPI.Controllers.Patients
 {
@@ -52,6 +53,27 @@ namespace MaxAPI.Controllers.Patients
             }
 
             return patient;
+        }
+
+        [HttpGet("doctor/{id}")]
+        [Authorize]
+        [AuthorizationRole(Role.Patient)]
+        public async Task<ActionResult<Doctor>> GetPatientsDoctor(int id)
+        {
+            var patient = await _patientService.GetPatientWithDoctor(id);
+            var claimId = ClaimUtils.GetId(HttpContext);
+
+            if (id != claimId)
+            {
+                return Unauthorized();
+            }
+
+            if (patient is null || patient.Doctor is null)
+            {
+                return NotFound();
+            }
+
+            return patient.Doctor;
         }
 
         [HttpPut("{id}")]

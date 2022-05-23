@@ -85,7 +85,8 @@ namespace MaxAPI.Services
                 Username = registerDoctor.Username,
                 FirstName = registerDoctor.FirstName,
                 LastName = registerDoctor.LastName,
-                Role = Enums.Role.Doctor
+                Role = Enums.Role.Doctor,
+                Education = string.Empty
             };
 
             _context.Users.Add(doctor);
