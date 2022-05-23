@@ -79,7 +79,7 @@ namespace MaxAPI.Services
         public async Task<List<Diagnosis>> GetAllAsync(Patient patient)
         {
             var foundPatient = await _context.Patients
-               .Include(x => x.Vaccinations)
+               .Include(x => x.Diagnoses)
                .FirstOrDefaultAsync(x => x.Id == patient.Id);
 
             if (foundPatient is null) return new List<Diagnosis>();
