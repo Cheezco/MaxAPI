@@ -21,7 +21,6 @@ namespace MaxAPI.Controllers.Doctors
     public class DoctorsController : ControllerBase
     {
         private readonly IDoctorService _doctorService;
-
         public DoctorsController(IDoctorService doctorService)
         {
             _doctorService = doctorService;
